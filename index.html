@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#171815" />
+<meta name="description" content="Aule CRE Intelligence — evidence-first acquisition workspace for St. Louis commercial real estate." />
+<title>Aule CRE Intelligence v2</title>
+<link rel="stylesheet" href="/styles-base.css" />
+<link rel="stylesheet" href="/styles-components.css" />
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 18 12 4l8 14M7 14h10"/></svg></div><div><div class="brand-kicker">Aule Systems</div><div class="brand-title">CRE Intelligence</div></div></div>
+  <div class="nav-section">Workspace</div>
+  <button class="nav-btn active" data-page="today" onclick="go('today')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 13h6V4H4v9Zm10 7h6V11h-6v9ZM4 20h6v-3H4v3Zm10-13h6V4h-6v3Z"/></svg><span class="nav-label">Today</span><span class="count-pill" id="nav-today">0</span></button>
+  <button class="nav-btn" data-page="discover" onclick="go('discover')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span class="nav-label">Discover</span><span class="count-pill" id="nav-discover">1,485</span></button>
+  <button class="nav-btn" data-page="signals" onclick="go('signals')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 17h3l3-9 4 12 3-7h3"/></svg><span class="nav-label">Signals</span><span class="count-pill" id="nav-signals">0</span></button>
+  <button class="nav-btn" data-page="underwrite" onclick="go('underwrite')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 3h14v18H5zM8 7h8M8 11h3M8 15h3M14 11h2M14 15h2"/></svg><span class="nav-label">Underwrite</span><span class="count-pill" id="nav-underwrite">0</span></button>
+  <button class="nav-btn" data-page="outreach" onclick="go('outreach')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/></svg><span class="nav-label">Outreach</span><span class="count-pill" id="nav-outreach">0</span></button>
+  <button class="nav-btn" data-page="saved" onclick="go('saved')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 3h12v18l-6-4-6 4V3Z"/></svg><span class="nav-label">Saved</span><span class="count-pill" id="nav-saved">0</span></button>
+  <div class="nav-section">System</div>
+  <button class="nav-btn" data-page="health" onclick="go('health')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4zM8 15V9m4 6V6m4 9v-3"/></svg><span class="nav-label">Data health</span><span class="count-pill">7</span></button>
+  <div class="sidebar-bottom"><div class="freshness"><i class="fresh-dot"></i><span>Source snapshot is 46 days old.<br/>Refresh pipeline requires attention.</span></div><div class="operator"><div class="avatar">BM</div><div><b>Brennan McCloud</b><span>Acquisition operator</span></div></div></div>
+</aside>
+<main class="main">
+<header class="topbar"><div class="crumb"><small id="crumb-kicker">Acquisition workspace</small><strong id="crumb-title">Today</strong></div><div class="global-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="global-search" placeholder="Search property, owner, ZIP or signal" oninput="onSearch(this.value)"/><span class="key">⌘ K</span></div><div class="top-actions"><button class="icon-btn" title="Data health" onclick="go('health')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 13h3l3-8 4 14 3-8h3"/></svg></button><button class="secondary-btn" onclick="exportCsv()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>Export</button><button class="primary-btn" onclick="openFilters()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16M7 12h10m-7 6h4"/></svg>Filters <span id="filter-count"></span></button></div></header>
+<div id="page" class="page"></div>
+</main>
+<nav class="mobile-nav"><button data-page="today" class="active" onclick="go('today')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 13h6V4H4v9Zm10 7h6V11h-6v9Z"/></svg>Today</button><button data-page="discover" onclick="go('discover')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Discover</button><button data-page="signals" onclick="go('signals')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 17h3l3-9 4 12 3-7h3"/></svg>Signals</button><button data-page="underwrite" onclick="go('underwrite')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 3h14v18H5zM8 7h8"/></svg>Underwrite</button><button data-page="saved" onclick="go('saved')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 3h12v18l-6-4-6 4V3Z"/></svg>Saved</button></nav>
+</div>
+<div class="drawer-backdrop" id="backdrop" onclick="closePanels()"></div>
+<aside class="drawer" id="drawer"><div id="drawer-content"></div></aside>
+<aside class="filter-panel" id="filters"><div class="filter-head"><h2>Refine universe</h2><button class="drawer-close" onclick="closePanels()">×</button></div><div class="filter-body">
+<div class="filter-group"><h3>Asset</h3><div class="field-row"><div class="field"><label>Minimum units</label><input type="number" id="f-min-units" value="50" min="0"/></div><div class="field"><label>Maximum units</label><input type="number" id="f-max-units" placeholder="Any" min="0"/></div></div></div>
+<div class="filter-group"><h3>Geography</h3><div class="field-row"><div class="field"><label>Jurisdiction</label><select id="f-jurisdiction"><option value="">All</option><option>COUNTY</option><option>CITY</option><option>RV</option></select></div><div class="field"><label>ZIP starts with</label><input id="f-zip" placeholder="631"/></div></div></div>
+<div class="filter-group"><h3>Economics & confidence</h3><div class="field-row"><div class="field"><label>Minimum v2 score</label><input type="number" id="f-min-score" placeholder="Any" min="0" max="100"/></div><div class="field"><label>Confidence</label><select id="f-confidence"><option value="">Any</option><option value="65">A / B only</option><option value="50">C or better</option></select></div></div></div>
+<div class="filter-group"><h3>Workflow</h3><div class="check-grid"><label class="check"><input type="checkbox" id="f-mao"/> Defensible MAO</label><label class="check"><input type="checkbox" id="f-contact"/> Contact path</label><label class="check"><input type="checkbox" id="f-signal"/> 2+ signals</label><label class="check"><input type="checkbox" id="f-clean"/> No critical warnings</label></div></div>
+<div class="filter-group"><h3>Priority</h3><div class="field"><select id="f-priority"><option value="">All priorities</option><option>Call now</option><option>Underwrite next</option><option>Resolve contact</option><option>Research gap</option><option>Watch</option><option>Monitor</option></select></div></div>
+</div><div class="filter-foot"><button class="secondary-btn" onclick="resetFilters()">Reset</button><button class="primary-btn" onclick="applyFiltersFromPanel()">Apply filters</button></div></aside>
+<div class="toast" id="toast"></div>
+<script src="/app-core.js" defer></script>
+<script src="/app-views.js" defer></script>
+<script src="/app-actions.js" defer></script>
+</body></html>
