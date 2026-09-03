@@ -5,11 +5,12 @@ from flask import Flask, Response, abort, send_from_directory
 ROOT = Path(__file__).resolve().parent
 PUBLIC_FILES = {
     "index.html",
-    "styles-base.css",
-    "styles-components.css",
-    "app-core.js",
-    "app-views.js",
-    "app-actions.js",
+    "styles.css",
+    "app.js",
+    "app-payload/00.txt",
+    "app-payload/01.txt",
+    "app-payload/02.txt",
+    "app-payload/03.txt",
 }
 
 app = Flask(__name__, static_folder=None)
@@ -30,11 +31,19 @@ def index() -> Response:
 
 @app.get("/healthz")
 def healthz() -> dict[str, object]:
-    return {"ok": True, "app": "aule-cre-intelligence-v2", "version": "2.0.0"}
+    return {
+        "ok": True,
+        "app": "aule-cre-intelligence-map",
+        "version": "2026.09.03",
+    }
 
 
 @app.get("/<path:filename>")
 def public_file(filename: str):
     if filename not in PUBLIC_FILES:
         abort(404)
-    return send_from_directory(ROOT, filename)
+    response = send_from_directory(ROOT, filename)
+    if filename.startswith("app-payload/") or filename in {"app.js", "styles.css"}:
+        response.headers["Cache-Control"] = "public, max-age=300, stale-while-revalidate=86400"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return response
