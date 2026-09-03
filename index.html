@@ -1,46 +1,188 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<meta name="theme-color" content="#171815" />
-<meta name="description" content="Aule CRE Intelligence — evidence-first acquisition workspace for St. Louis commercial real estate." />
-<title>Aule CRE Intelligence v2</title>
-<link rel="stylesheet" href="/styles-base.css" />
-<link rel="stylesheet" href="/styles-components.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#091119" />
+  <meta name="description" content="Aule CRE Intelligence — evidence-first commercial real estate acquisition map for St. Louis." />
+  <title>Aule CRE Intelligence · Map</title>
+  <link rel="preconnect" href="https://basemaps.cartocdn.com" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="/styles.css?v=20260903-2" />
 </head>
 <body>
-<div class="app">
-<aside class="sidebar">
-  <div class="brand"><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 18 12 4l8 14M7 14h10"/></svg></div><div><div class="brand-kicker">Aule Systems</div><div class="brand-title">CRE Intelligence</div></div></div>
-  <div class="nav-section">Workspace</div>
-  <button class="nav-btn active" data-page="today" onclick="go('today')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 13h6V4H4v9Zm10 7h6V11h-6v9ZM4 20h6v-3H4v3Zm10-13h6V4h-6v3Z"/></svg><span class="nav-label">Today</span><span class="count-pill" id="nav-today">0</span></button>
-  <button class="nav-btn" data-page="discover" onclick="go('discover')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span class="nav-label">Discover</span><span class="count-pill" id="nav-discover">1,485</span></button>
-  <button class="nav-btn" data-page="signals" onclick="go('signals')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 17h3l3-9 4 12 3-7h3"/></svg><span class="nav-label">Signals</span><span class="count-pill" id="nav-signals">0</span></button>
-  <button class="nav-btn" data-page="underwrite" onclick="go('underwrite')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 3h14v18H5zM8 7h8M8 11h3M8 15h3M14 11h2M14 15h2"/></svg><span class="nav-label">Underwrite</span><span class="count-pill" id="nav-underwrite">0</span></button>
-  <button class="nav-btn" data-page="outreach" onclick="go('outreach')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/></svg><span class="nav-label">Outreach</span><span class="count-pill" id="nav-outreach">0</span></button>
-  <button class="nav-btn" data-page="saved" onclick="go('saved')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 3h12v18l-6-4-6 4V3Z"/></svg><span class="nav-label">Saved</span><span class="count-pill" id="nav-saved">0</span></button>
-  <div class="nav-section">System</div>
-  <button class="nav-btn" data-page="health" onclick="go('health')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4zM8 15V9m4 6V6m4 9v-3"/></svg><span class="nav-label">Data health</span><span class="count-pill">7</span></button>
-  <div class="sidebar-bottom"><div class="freshness"><i class="fresh-dot"></i><span>Source snapshot is 46 days old.<br/>Refresh pipeline requires attention.</span></div><div class="operator"><div class="avatar">BM</div><div><b>Brennan McCloud</b><span>Acquisition operator</span></div></div></div>
-</aside>
-<main class="main">
-<header class="topbar"><div class="crumb"><small id="crumb-kicker">Acquisition workspace</small><strong id="crumb-title">Today</strong></div><div class="global-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="global-search" placeholder="Search property, owner, ZIP or signal" oninput="onSearch(this.value)"/><span class="key">⌘ K</span></div><div class="top-actions"><button class="icon-btn" title="Data health" onclick="go('health')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 13h3l3-8 4 14 3-8h3"/></svg></button><button class="secondary-btn" onclick="exportCsv()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>Export</button><button class="primary-btn" onclick="openFilters()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16M7 12h10m-7 6h4"/></svg>Filters <span id="filter-count"></span></button></div></header>
-<div id="page" class="page"></div>
-</main>
-<nav class="mobile-nav"><button data-page="today" class="active" onclick="go('today')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 13h6V4H4v9Zm10 7h6V11h-6v9Z"/></svg>Today</button><button data-page="discover" onclick="go('discover')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Discover</button><button data-page="signals" onclick="go('signals')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 17h3l3-9 4 12 3-7h3"/></svg>Signals</button><button data-page="underwrite" onclick="go('underwrite')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 3h14v18H5zM8 7h8"/></svg>Underwrite</button><button data-page="saved" onclick="go('saved')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 3h12v18l-6-4-6 4V3Z"/></svg>Saved</button></nav>
-</div>
-<div class="drawer-backdrop" id="backdrop" onclick="closePanels()"></div>
-<aside class="drawer" id="drawer"><div id="drawer-content"></div></aside>
-<aside class="filter-panel" id="filters"><div class="filter-head"><h2>Refine universe</h2><button class="drawer-close" onclick="closePanels()">×</button></div><div class="filter-body">
-<div class="filter-group"><h3>Asset</h3><div class="field-row"><div class="field"><label>Minimum units</label><input type="number" id="f-min-units" value="50" min="0"/></div><div class="field"><label>Maximum units</label><input type="number" id="f-max-units" placeholder="Any" min="0"/></div></div></div>
-<div class="filter-group"><h3>Geography</h3><div class="field-row"><div class="field"><label>Jurisdiction</label><select id="f-jurisdiction"><option value="">All</option><option>COUNTY</option><option>CITY</option><option>RV</option></select></div><div class="field"><label>ZIP starts with</label><input id="f-zip" placeholder="631"/></div></div></div>
-<div class="filter-group"><h3>Economics & confidence</h3><div class="field-row"><div class="field"><label>Minimum v2 score</label><input type="number" id="f-min-score" placeholder="Any" min="0" max="100"/></div><div class="field"><label>Confidence</label><select id="f-confidence"><option value="">Any</option><option value="65">A / B only</option><option value="50">C or better</option></select></div></div></div>
-<div class="filter-group"><h3>Workflow</h3><div class="check-grid"><label class="check"><input type="checkbox" id="f-mao"/> Defensible MAO</label><label class="check"><input type="checkbox" id="f-contact"/> Contact path</label><label class="check"><input type="checkbox" id="f-signal"/> 2+ signals</label><label class="check"><input type="checkbox" id="f-clean"/> No critical warnings</label></div></div>
-<div class="filter-group"><h3>Priority</h3><div class="field"><select id="f-priority"><option value="">All priorities</option><option>Call now</option><option>Underwrite next</option><option>Resolve contact</option><option>Research gap</option><option>Watch</option><option>Monitor</option></select></div></div>
-</div><div class="filter-foot"><button class="secondary-btn" onclick="resetFilters()">Reset</button><button class="primary-btn" onclick="applyFiltersFromPanel()">Apply filters</button></div></aside>
-<div class="toast" id="toast"></div>
-<script src="/app-core.js" defer></script>
-<script src="/app-views.js" defer></script>
-<script src="/app-actions.js" defer></script>
-</body></html>
+  <div id="map" aria-label="St. Louis commercial real estate acquisition map"></div>
+
+  <header id="commandBar" class="command-bar">
+    <div class="bar-row bar-row-primary">
+      <button class="brand" id="fitButton" type="button" title="Fit map to current results">
+        <span class="brand-title">Aule CRE Intelligence</span>
+        <span class="brand-subtitle">STL acquisition map · evidence-first screening</span>
+      </button>
+
+      <div class="stats glass" aria-live="polite">
+        <span><b id="statCount">—</b> props</span>
+        <span><b id="statUnits">—</b> units</span>
+        <span><b id="statValue">—</b> appraised</span>
+      </div>
+
+      <label class="search glass" for="searchInput">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+        <input id="searchInput" type="search" autocomplete="off" placeholder="Search owner, property, ZIP or signal…" />
+        <kbd>/</kbd>
+      </label>
+
+      <button class="top-button primary active" id="boardButton" type="button" aria-controls="dealBoard" aria-expanded="true">
+        <span class="button-icon">☰</span> Deal board <span id="boardCount" class="button-count">—</span>
+      </button>
+      <button class="top-button" id="filtersButton" type="button" aria-controls="filterTray" aria-expanded="true">
+        <span class="button-icon">⌁</span> Filters <span id="activeFilterCount" class="button-count"></span>
+      </button>
+    </div>
+
+    <section id="filterTray" class="filter-tray" aria-label="Map filters">
+      <div class="filter-line">
+        <div class="chip-group" aria-label="Asset type">
+          <button class="chip active" data-asset="all" type="button">All</button>
+          <button class="chip" data-asset="market_rate" type="button"><i class="dot market"></i>Market-rate</button>
+          <button class="chip" data-asset="subsidized" type="button"><i class="dot lihtc"></i>LIHTC / assisted</button>
+          <button class="chip" data-asset="senior" type="button"><i class="dot senior"></i>Senior / care</button>
+          <button class="chip" data-asset="mixed_use" type="button"><i class="dot mixed"></i>Mixed-use</button>
+          <button class="chip" data-asset="rv" type="button"><i class="diamond"></i>RV / boat <span id="rvCount">—</span></button>
+        </div>
+
+        <div class="chip-group" aria-label="Marker color">
+          <button class="chip active" data-color="priority" type="button">Priority</button>
+          <button class="chip" data-color="economics" type="button">Economics</button>
+          <button class="chip" data-color="type" type="button">Asset type</button>
+          <button class="chip" id="satelliteButton" type="button">Satellite</button>
+          <button class="chip signal-chip" id="signalsButton" type="button">Pulse <span id="signalCount">—</span></button>
+          <button class="chip saved-chip" id="savedButton" type="button">★ Saved <span id="savedCount">0</span></button>
+        </div>
+      </div>
+
+      <div class="select-line">
+        <select id="actionFilter" aria-label="Action tier">
+          <option value="">All action tiers</option>
+          <option>Call now</option>
+          <option>Underwrite next</option>
+          <option>Resolve contact</option>
+          <option>Watch</option>
+          <option>Research gap</option>
+          <option>Monitor</option>
+        </select>
+        <select id="gradeFilter" aria-label="Evidence grade">
+          <option value="">Any evidence grade</option>
+          <option value="A">A · trusted</option>
+          <option value="B">B · usable</option>
+          <option value="C">C · directional</option>
+          <option value="D,X">D/X · blocked</option>
+        </select>
+        <select id="jurisdictionFilter" aria-label="Jurisdiction">
+          <option value="">All jurisdictions</option>
+          <option value="COUNTY">St. Louis County</option>
+          <option value="CITY">St. Louis City</option>
+        </select>
+        <select id="unitsFilter" aria-label="Minimum units">
+          <option value="16">16+ units</option>
+          <option value="25">25+ units</option>
+          <option value="50" selected>50+ units</option>
+          <option value="100">100+ units</option>
+          <option value="200">200+ units</option>
+        </select>
+        <select id="scoreFilter" aria-label="Minimum acquisition score">
+          <option value="0">Any score</option>
+          <option value="40">40+</option>
+          <option value="50">50+</option>
+          <option value="60">60+</option>
+          <option value="70">70+</option>
+        </select>
+        <button class="select-button" id="defensibleOnlyButton" type="button">Defensible MAO only</button>
+        <button class="select-button" id="contactOnlyButton" type="button">Decision path found</button>
+        <button class="select-button" id="clearFiltersButton" type="button">Clear</button>
+      </div>
+    </section>
+  </header>
+
+  <section id="dealBoard" class="deal-board open glass" aria-label="Ranked acquisition opportunities">
+    <div class="board-header">
+      <div>
+        <strong>Deal board</strong>
+        <span id="boardShown">— shown</span>
+      </div>
+      <div class="board-tools">
+        <select id="sortSelect" aria-label="Sort deal board">
+          <option value="score">Acquisition score</option>
+          <option value="motivation">Motivation</option>
+          <option value="economics">Economics</option>
+          <option value="confidence">Data confidence</option>
+          <option value="units">Units</option>
+          <option value="mao">MAO / unit</option>
+        </select>
+        <button id="exportButton" type="button" title="Export current results">⇩ CSV</button>
+        <button id="closeBoardButton" type="button" aria-label="Close deal board">×</button>
+      </div>
+      <small><b>j/k</b> move · <b>enter</b> open · <b>s</b> save · <b>/</b> search</small>
+    </div>
+    <div class="board-columns"><span>#</span><span>Property · decision basis</span><span>Units</span><span>Score</span><span>MAO/u</span></div>
+    <div id="dealList" class="deal-list" role="listbox" tabindex="0" aria-label="Ranked properties"></div>
+    <div id="boardFooter" class="board-footer"></div>
+  </section>
+
+  <section id="legend" class="legend glass" aria-label="Map legend">
+    <div><b>Priority:</b> <i class="legend-dot call"></i>call now <i class="legend-dot underwrite"></i>underwrite <i class="legend-dot contact"></i>resolve contact <i class="legend-dot research"></i>research</div>
+    <div><b>Evidence:</b> A trusted · B usable · C directional · D/X blocked</div>
+    <div><span class="legend-ring"></span> decision path found · marker size = unit count</div>
+  </section>
+
+  <div class="map-actions glass">
+    <button id="fitMapButton" type="button" title="Fit map to results">⌖</button>
+    <button id="healthButton" type="button" title="Open data health">↯</button>
+  </div>
+
+  <div id="backdrop" class="backdrop" hidden></div>
+
+  <aside id="drawer" class="drawer" aria-label="Property details" aria-hidden="true">
+    <div class="drawer-header">
+      <div class="drawer-heading-row">
+        <div>
+          <span id="drawerKicker" class="drawer-kicker">Property intelligence</span>
+          <h1 id="drawerTitle">Property</h1>
+          <p id="drawerAddress"></p>
+        </div>
+        <button id="drawerClose" class="drawer-close" type="button" aria-label="Close property details">×</button>
+      </div>
+      <div id="drawerTags" class="drawer-tags"></div>
+      <nav id="drawerTabs" class="drawer-tabs" aria-label="Property sections">
+        <button class="active" data-tab="overview" type="button">Overview</button>
+        <button data-tab="underwrite" type="button">Underwrite</button>
+        <button data-tab="signals" type="button">Signals</button>
+        <button data-tab="ownership" type="button">Ownership</button>
+        <button data-tab="evidence" type="button">Evidence</button>
+      </nav>
+    </div>
+    <div id="drawerBody" class="drawer-body" tabindex="0"></div>
+  </aside>
+
+  <aside id="overlayPanel" class="overlay-panel" aria-hidden="true">
+    <div class="overlay-header">
+      <div>
+        <span class="drawer-kicker" id="overlayKicker">System intelligence</span>
+        <h2 id="overlayTitle">Pulse</h2>
+      </div>
+      <button id="overlayClose" class="drawer-close" type="button" aria-label="Close panel">×</button>
+    </div>
+    <div id="overlayBody" class="overlay-body" tabindex="0"></div>
+  </aside>
+
+  <div id="loading" class="loading glass">
+    <span class="spinner"></span>
+    <div><b>Loading acquisition intelligence</b><small>Normalizing scores, valuations, signals and map records…</small></div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/app.js?v=20260903-2"></script>
+</body>
+</html>
